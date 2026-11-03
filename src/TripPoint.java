@@ -145,24 +145,56 @@ public class TripPoint {
 	}
 	
 	//Code To Implement
+	/**
+	 * Finds all the stop zones in the trip ArrayList using the first heuristic method.
+	 * Returns the amount of stops in trip ArrayList, initalizes movingTrip, and fills movingTrips with all non-stop TripPoints
+	 * @return
+	 */
 	public static int h1StopDetection() {
+		//remove later
+		try {
+			readFile("triplog.csv");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		movingTrip = new ArrayList<>();
+		movingTrip.add(trip.get(0));
 		
+		int stopCount = 0;
+		for (int i = 1; i < trip.size(); i++) {
+			if (haversineDistance(trip.get(i - 1), trip.get(i)) <= 0.6) {
+				stopCount++;
+			} else {
+				movingTrip.add(trip.get(i));
+			}
+		}
+		
+		return stopCount;
 	}
 	
-	public static int h2StropDetection() {
-		
+	public static int h2StopDetection() {
+		return 0;
 	}
 	
 	public static double movingTime() {
-		
+		return 0.0;
+	}
+	
+	public static double stoppedTime() {
+		return 0.0;
 	}
 	
 	public static double avgMovingSpeed() {
-		
+		return 0.0;
 	}
 	
 	public static ArrayList<TripPoint> getMovingTrip() {
-		
+		return new ArrayList<TripPoint>(movingTrip);
 	}
 
 }
