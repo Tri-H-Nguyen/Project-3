@@ -162,12 +162,13 @@ public class TripPoint {
 			e.printStackTrace();
 		}
 
+		double dt = 0.6;
 		movingTrip = new ArrayList<>();
 		movingTrip.add(trip.get(0));
 		
 		int stopCount = 0;
 		for (int i = 1; i < trip.size(); i++) {
-			if (haversineDistance(trip.get(i - 1), trip.get(i)) <= 0.6) {
+			if (haversineDistance(trip.get(i - 1), trip.get(i)) <= dt) {
 				stopCount++;
 			} else {
 				movingTrip.add(trip.get(i));
@@ -178,7 +179,45 @@ public class TripPoint {
 	}
 	
 	public static int h2StopDetection() {
-		return 0;
+		
+		double radius = 0.5;
+		movingTrip = new ArrayList<>();
+		
+		int stopCount = 0;
+		ArrayList<TripPoint> tripPointNearby;
+		for (int i = 0; i < trip.size(); i++) {
+			tripPointNearby = new ArrayList<>();
+			for (int j = 0; j < trip.size(); j++) {
+				if (haversineDistance(trip.get(i), trip.get(j)) <= radius) {
+					if (i == j) {
+						continue;
+					}
+					tripPointNearby.add(trip.get(j));
+				}
+			}
+			if (tripPointNearby.size() >= 2 && pointWithinRadius(tripPointNearby, radius)) {
+				stopCount++;
+			} else {
+				movingTrip.add(trip.get(i));
+			}
+		}
+
+		return stopCount;
+	}
+	
+	//helper method for h2StopDetection
+	public static boolean pointWithinRadius(ArrayList<TripPoint> tripPointNearby, double radius) {
+		for (int i = 0; i < tripPointNearby.size(); i++) {
+			for (int j = 0; j < tripPointNearby.size(); j++) {
+				if (haversineDistance(tripPointNearby.get(i), tripPointNearby.get(j)) <= radius) {
+					if (i == j) {
+						continue;
+					}
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	public static double movingTime() {
