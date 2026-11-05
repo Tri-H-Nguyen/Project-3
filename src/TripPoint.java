@@ -253,15 +253,30 @@ public class TripPoint {
 	}
 		
 	
-	public static double movingTime() {
-		return 0.0;
+	public static double movingTime() { 
+		double totalMovingTime = 0; 
+		
+		//Iterates through all of trip ArrayList
+		for (int i = 1; i < trip.size(); i++) { 
+			
+			/*
+			 * If movingTrip has the same TripPoint as the i index in trip, add the difference
+			 * between the i index in trip and the i - 1 index.
+			 * Then add the difference to the total.
+			 */
+			if (movingTrip.contains(trip.get(i))) { 
+				totalMovingTime += trip.get(i).getTime() - trip.get(i - 1).getTime(); 
+			} 
+		} 
+		
+		return totalMovingTime / 60;
 	}
 	
 	public static double stoppedTime() {
 		return 0.0;
 	}
 	
-	public static double avgMovingSpeed() throws FileNotFoundException, IOException {
+	public static double avgMovingSpeed() {
 		return 0.0;
 	}
 	
