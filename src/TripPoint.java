@@ -252,7 +252,10 @@ public class TripPoint {
 		return stopCount;
 	}
 		
-	
+	/**
+	 * Returns the total time spent moving in the trip ArrayList in units of hours.
+	 * @return
+	 */
 	public static double movingTime() { 
 		double totalMovingTime = 0; 
 		
@@ -269,12 +272,22 @@ public class TripPoint {
 			} 
 		} 
 		
+		//Returns the totalMovingTime in hours
 		return totalMovingTime / 60;
 	}
 	
-	public static double stoppedTime() {
-		return 0.0;
-	}
+	/**
+	 * Returns the total time spent stopped in the trip ArrayList in units of hours.
+	 * @return
+	 */
+	public static double stoppedTime() { 
+		
+		/*
+		 * The time spent stopped is the time spend not moving. So we return the difference between
+		 * the total time and the moving time. Both methods are in units of hours, so we do not need to convert.
+		 */
+		return totalTime() - movingTime();
+	} 
 	
 	public static double avgMovingSpeed() {
 		return 0.0;
