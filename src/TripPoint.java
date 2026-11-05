@@ -289,10 +289,26 @@ public class TripPoint {
 		return totalTime() - movingTime();
 	} 
 	
+	/**
+	 * Returns the total distance between each moving point divided by the total moving time.
+	 * @return
+	 */
 	public static double avgMovingSpeed() {
-		return 0.0;
+		double totalMovingDistance = 0.0;
+		
+		//Iterates through movingTrip and finds the sum of distance between each moving point
+		for (int i = 0; i < movingTrip.size() - 1; i++) {
+			totalMovingDistance += haversineDistance(movingTrip.get(i), movingTrip.get(i + 1));
+		}
+		
+		//Returns the Average Moving Speed.
+		return totalMovingDistance / movingTime();
 	}
 	
+	/**
+	 * Returns a copy of movingTrip ArrayList.
+	 * @return
+	 */
 	public static ArrayList<TripPoint> getMovingTrip() {
 		return new ArrayList<TripPoint>(movingTrip);
 	}
