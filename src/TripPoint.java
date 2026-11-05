@@ -147,7 +147,7 @@ public class TripPoint {
 	//Code To Implement
 	/**
 	 * Finds all the stop zones in the trip ArrayList using the first heuristic method.
-	 * Returns the amount of stops in trip ArrayList, initalizes movingTrip, and fills movingTrips with all non-stop TripPoints
+	 * Returns the amount of stops in trip ArrayList, initializes movingTrip, and fills movingTrips with all non-stop TripPoints
 	 * @return
 	 */
 	public static int h1StopDetection() {
@@ -167,7 +167,15 @@ public class TripPoint {
 		movingTrip.add(trip.get(0));
 		
 		int stopCount = 0;
+		
+		//Iterates through trip ArrayList
 		for (int i = 1; i < trip.size(); i++) {
+			
+			/*
+			 * Compares the haversineDistance between the current TripPoint and the previous tripPoint
+			 * If the distance is within the displacement threshold, increment stopCount by one
+			 * Otherwise, add the current TripPoint to movingTrip
+			 */
 			if (haversineDistance(trip.get(i - 1), trip.get(i)) <= dt) {
 				stopCount++;
 			} else {
@@ -178,47 +186,72 @@ public class TripPoint {
 		return stopCount;
 	}
 	
+	/**
+	 * Finds groups of three or more that are a radius distance from each other using the second heuristic method.
+	 * Returns the amount of stops that are in stopZones in trip ArrayList
+	 * Initializes movingTrip, and fills it with all non stop TripPoints.
+	 * @return
+	 */
 	public static int h2StopDetection() {
 		
 		double radius = 0.5;
 		movingTrip = new ArrayList<>();
 		
 		int stopCount = 0;
-		ArrayList<TripPoint> tripPointNearby;
-		for (int i = 0; i < trip.size(); i++) {
-			tripPointNearby = new ArrayList<>();
-			for (int j = 0; j < trip.size(); j++) {
-				if (haversineDistance(trip.get(i), trip.get(j)) <= radius) {
-					if (i == j) {
-						continue;
-					}
-					tripPointNearby.add(trip.get(j));
+		ArrayList<TripPoint> stopZone = new ArrayList<>();
+
+		//Iterates through all TripPoints in trip
+		for (TripPoint tp : trip) {
+			
+			/*
+			 *Adds the first TripPoint to the initialized stopZone ArrayList.
+			 * Then skips to the second TripPoint.
+			 */
+			if (stopZone.isEmpty()) {
+				stopZone.add(tp);
+				continue;
+			}
+			
+			/*
+			 *If the current TripPoint is within radius haversineDistance from any TripPoint
+			 * currently in the stopZone, add the TripPoint to the stopZone.
+			 */
+			for (TripPoint stops : stopZone) {
+				if (haversineDistance(tp, stops) <= radius) {
+					stopZone.add(tp);
+					break;
 				}
 			}
-			if (tripPointNearby.size() >= 2 && pointWithinRadius(tripPointNearby, radius)) {
-				stopCount++;
-			} else {
-				movingTrip.add(trip.get(i));
+			
+			/*
+			 *If the TripPoint was not added : 
+			 *    add the stopZone size to stopCount if >= 3
+			 * OR add the TripPoints from the stopZone to movingTrip.
+			 * 
+			 * Clears the stopZone and adds the current TripPoint to the stopZone to check if
+			 * the TripPoint is apart of different group.
+			 */
+			if(!stopZone.contains(tp)) {
+				if (stopZone.size() >= 3) {
+					stopCount += stopZone.size();
+				} else {
+					movingTrip.addAll(stopZone);
+				}
+				stopZone.clear();
+				stopZone.add(tp);
+				
 			}
 		}
-
+		
+		/* 
+		 *If there are left over TripPoints in stopZone, they are considered as moving points
+		 *and are added to movingTrip. 
+		 */
+		movingTrip.addAll(stopZone);
+		
 		return stopCount;
 	}
-	
-	//helper method for h2StopDetection
-	public static boolean pointWithinRadius(ArrayList<TripPoint> tripPointNearby, double radius) {
-		for (int i = 0; i < tripPointNearby.size(); i++) {
-			for (int j = 0; j < tripPointNearby.size(); j++) {
-				if (haversineDistance(tripPointNearby.get(i), tripPointNearby.get(j)) <= radius) {
-					if (i == j) {
-						continue;
-					}
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+		
 	
 	public static double movingTime() {
 		return 0.0;
@@ -228,7 +261,7 @@ public class TripPoint {
 		return 0.0;
 	}
 	
-	public static double avgMovingSpeed() {
+	public static double avgMovingSpeed() throws FileNotFoundException, IOException {
 		return 0.0;
 	}
 	
