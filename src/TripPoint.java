@@ -151,16 +151,6 @@ public class TripPoint {
 	 * @return
 	 */
 	public static int h1StopDetection() {
-		//remove later
-		try {
-			readFile("triplog.csv");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		double dt = 0.6;
 		movingTrip = new ArrayList<>();
